@@ -4,6 +4,7 @@ canvas.height=window.innerHeight-28;
 canvas.width=window.innerWidth-28;
 c = canvas.getContext("2d");
 document.body.appendChild(canvas);
+document.title = "Speckticle Particle Emitter System Test Page"
 
 
 /*
@@ -67,7 +68,11 @@ var fps = {
 	lil particles. xpos, ypos, amount of
 	particles to emit, rate of fade (ms/tick)
 */
-emitter = function(x,y,amount,decay){
+emitter = function(x,y,amount,decay,imgURL){
+	if (imgURL){
+		this.img = document.createElement('img')
+		this.img.src = "speck.png"
+	}
 	this.particles = []
 	this.x=x; this.y=y;
 	this.emitting = true;
@@ -95,10 +100,17 @@ emitter = function(x,y,amount,decay){
 				}
 				//Draw particle:
 				if(this.alpha>0){
-					c.fillStyle = "rgba("+self.r+","+self.g+","+self.b+","+this.alpha+")";
-					c.fillRect(this.x,this.y-3,1,7);
-					c.fillRect(this.x-3,this.y,7,1);
+					if (self.img){
+						c.globalAlpha = this.alpha;
+						c.drawImage(self.img,this.x,this.y)
+						c.globalAlpha= 1
+					}else{
+						c.fillStyle = "rgba("+self.r+","+self.g+","+self.b+","+this.alpha+")";
+						c.fillRect(this.x,this.y-3,1,7);
+						c.fillRect(this.x-3,this.y,7,1);
+					}
 				}
+
 			}
 		self.particles.push(this); //Send particle to particle pool
 	};
@@ -109,7 +121,7 @@ emitter = function(x,y,amount,decay){
 };
 
 
-testmitter = new emitter(canvas.width/2,canvas.height/2,100,50);
+testmitter = new emitter(canvas.width/2,canvas.height/2,200,150,'speck.png');
 
 
 //Draw background
